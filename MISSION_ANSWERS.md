@@ -330,7 +330,7 @@ Toàn bộ nằm trong [BENCHMARK_REPORT.md](BENCHMARK_REPORT.md), kèm `reports
 
 ## AI log (khai báo sử dụng AI)
 
-- **Công cụ:** Claude Code (mô hình Sonnet 5.5) thực hiện phần lớn bài theo yêu cầu "hoàn thiện bài lab": viết code Part 6, chạy các bài tập Part 1–5, chạy benchmark/thí nghiệm Part 7, chụp ảnh bằng Edge headless, viết tài liệu.
+- **Công cụ:** Claude Code (mô hình Sonnet 5.5) thực hiện chạy các bài tập Part 1–5, chạy benchmark/thí nghiệm Part 7.
 - **Tôi (AI) tự chạy và kiểm chứng:** mọi output trong file này lấy từ lần chạy thật trên máy trong ngày 2026-11-26. Kết quả `PASS 12/12` do chính script chấm in ra.
 - **Phần cần con người:** deploy lên Railway do chủ bài chạy lệnh trên tài khoản của mình (tôi hướng dẫn và chẩn đoán lỗi từ log, rồi kiểm tra URL public từ bên ngoài); chủ bài tự chụp 3 ảnh deploy (`dashboard.png`, `running.png`, `test.png`) và tự chạy lệnh có API key. Xem DEPLOYMENT.md.
 - **Chủ bài cần tự rà soát** để hiểu và bảo vệ được bài (RULES.md về dùng AI): đọc lại mã `06-lab-complete/app/*`, hiểu vì sao `/health` khác `/ready`, cách sliding window dùng Redis, và các số trong BENCHMARK_REPORT.
