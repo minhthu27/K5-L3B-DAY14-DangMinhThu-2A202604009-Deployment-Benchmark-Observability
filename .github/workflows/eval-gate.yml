@@ -1,0 +1,44 @@
+name: eval-quality-gate
+
+# Chặn merge khi chất lượng agent tụt: run_eval.py trả exit code 1 nếu
+#   - accuracy < --min-accuracy, hoặc
+#   - có câu bị regression so với --baseline.
+# Bật "Require status checks to pass" cho check "eval" trong branch protection của main.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "06-lab-complete/benchmark-observability/develop/**"
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 06-lab-complete/benchmark-observability/develop
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+
+      - name: Start agent v2
+        run: |
+          AGENT_VERSION=v2 PORT=8002 MOCK_ERROR_RATE=0 nohup python app.py > agent.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:8002/health && break; sleep 1; done
+
+      - name: Eval quality gate (fail job => block merge)
+        run: |
+          python eval/run_eval.py --url http://localhost:8002 \
+            --min-accuracy 1.0 \
+            --baseline reports/eval_v2_fixed.json \
+            --out reports/eval_ci.json
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-report
+          path: 06-lab-complete/benchmark-observability/develop/reports/eval_ci.json
